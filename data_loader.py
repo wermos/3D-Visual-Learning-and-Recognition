@@ -40,7 +40,7 @@ def coil_20_data_loader():
         obj_num = obj_num_idx + 1
 
         image = load_image(dir_name, obj_num, angle_idx)
-        datum = (obj_num, angle_idx * 5, image)
+        datum = (obj_num_idx, angle_idx * 5, image)
 
         if angle_idx in testing_list[obj_num_idx]:
             testing[testing_idx] = datum
@@ -72,7 +72,7 @@ def coil_100_data_loader():
         obj_num = obj_num_idx + 1
 
         image = load_image(dir_name, obj_num, angle)
-        datum = (obj_num, angle, image)
+        datum = (obj_num_idx, angle, image)
 
         if angle_idx in testing_list[obj_num_idx]:
             testing[testing_idx] = datum
