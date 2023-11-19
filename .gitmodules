@@ -1,4 +1,4 @@
 [submodule "data"]
 	path = data
-	url = https://github.com/wermos/663-Project-Dataset.git
+	url = https://github.com/paramrathour/663-Project-Dataset
 	branch = main
