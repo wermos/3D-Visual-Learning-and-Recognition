@@ -1,5 +1,6 @@
 from math import floor
 
+NUM_OBJECTS = 20
 # The number of images we have of each object
 NUM_IMAGES = 72
 
