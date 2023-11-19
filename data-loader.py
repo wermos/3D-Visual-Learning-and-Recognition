@@ -1,135 +1,88 @@
-import os
-import cv2
+import itertools
 import numpy as np
+from random import sample
 
-# We will designate approximately 60% of the dataset to training and the
-# remaining 40% to testing.
+from constants import IMAGE_SIZE, NUM_IMAGES, NUM_TESTING_IMAGES, NUM_TRAINING_IMAGES
+from util import load_image
 
-def coil_20_processed_path_generator():
-    # There's 20 objects, and each object has 72 pictures for it.
+# Define the data type for the tuple elements
+dtype = np.dtype([('object number', np.ubyte), ('angle', np.ushort), ('image data', (np.double, (IMAGE_SIZE, 1)))])
 
-    # Since 0.6 * 72 = 43.2, we'll use 43 images for training and the remaining
-    # 29 images for testing.
+def classifier(num_objects):
+    # Decides which angles go into the training set and the testing set, for
+    # each object.
 
-    # All in all, there will be 20 * 43 = 860 training images and 20 * 29 = 580
-    # testing images.
-    training = []
-    testing = []
+    # We store the list of testing angles for each object, since that's fewer
+    # things to store in memory
+    testing_list = []
+    for _ in range(num_objects):
+        testing_list.append(sample(range(NUM_IMAGES), k=NUM_TESTING_IMAGES))
 
-    dir_name = './data/coil-20-processed'
+    return testing_list
 
-    for file_name in os.listdir(dir_name):
-        if file_name.endswith(".png"):
-            _, y = map(int, file_name.replace("obj", "").replace(".png", "").split("__"))
-            if y <= 42:
-                training.append(os.path.join(dir_name, file_name))
-            else:
-                testing.append(os.path.join(dir_name, file_name))
+def coil_20_data_loader():
+    dir_name = "./data/coil-20"
 
-    return training, testing
+    training = np.ndarray(20 * NUM_TRAINING_IMAGES, dtype=dtype)
+    testing = np.ndarray(20 * NUM_TESTING_IMAGES, dtype=dtype)
 
-def coil_20_unprocessed_path_generator():
-    # There's 5 objects, and each object has 72 pictures for it.
+    testing_list = classifier(20)
 
-    # Since 0.6 * 72 = 43.2, we'll use 43 images for training and the remaining
-    # 29 images for testing.
+    training_idx = 0
+    testing_idx = 0
 
-    # All in all, there will be 5 * 43 = 215 training images, and 5 * 29 = 145
-    # testing images.
-    training = []
-    testing = []
+    for obj_num_idx, angle_idx in itertools.product(range(20), range(NUM_IMAGES)):
+        # There's 71 images, and each image's rotation is 5 times the index value.
+        # For example, image number 5 has a rotation of 5 * 5 = 25 degrees.
+        #
+        # The `angle_idx` is a proxy for the actual angle of rotation of the image.
+        # Similarly, `obj_num_idx` is a proxy for the actual object number.
+        obj_num = obj_num_idx + 1
 
-    dir_name = './data/coil-20-unprocessed'
+        image = load_image(dir_name, obj_num, angle_idx)
+        datum = (obj_num, angle_idx * 5, image)
 
-    for file_name in os.listdir(dir_name):
-        if file_name.endswith(".png"):
-            _, y = map(int, file_name.replace("obj", "").replace(".png", "").split("__"))
-            if y <= 42:
-                training.append(os.path.join(dir_name, file_name))
-            else:
-                testing.append(os.path.join(dir_name, file_name))
-
-    return training, testing
-
-def coil_100_path_generator():
-    # There's 100 objects, and each object has 72 pictures for it.
-
-    # Since 0.6 * 72 = 43.2, we'll use 43 images for training and the remaining
-    # 29 images for testing.
-
-    # All in all, there will be 100 * 43 = 4300 training images, and 100 * 29 =
-    # 2900 testing images.
-    training = []
-    testing = []
-
-    dir_name = './data/coil-100'
-
-    for file_name in os.listdir(dir_name):
-        if file_name.endswith(".png"):
-            _, y = map(int, file_name.replace("obj", "").replace(".png", "").split("__"))
-            if y <= 210:
-                training.append(os.path.join(dir_name, file_name))
-            else:
-                testing.append(os.path.join(dir_name, file_name))
-
-    return training, testing
-
-def image_loader(file_list):
-    image_data = []
-    for file in file_list:
-        img = cv2.imread(file, cv2.IMREAD_GRAYSCALE)
-
-        if img is not None:
-            image_data.append(img)
+        if angle_idx in testing_list[obj_num_idx]:
+            testing[testing_idx] = datum
+            testing_idx += 1
         else:
-            print(f"Failed to load image: `{file}`")
+            training[training_idx] = datum
+            training_idx += 1
 
-    return image_data
+    return training, testing
 
-def coil_20_processed_data_loader():
-    # COIL 20 Processed images are 128 x 128
-    training_data, _ = coil_20_processed_path_generator()
+def coil_100_data_loader():
+    dir_name = "./data/coil-100"
 
-    training_data = image_loader(training_data)
+    training = np.ndarray(100 * NUM_TRAINING_IMAGES, dtype=dtype)
+    testing = np.ndarray(100 * NUM_TESTING_IMAGES, dtype=dtype)
 
-    training_matrix = np.ndarray(shape=(128 * 128, len(training_data)), dtype=np.float64)
+    testing_list = classifier(100)
 
-    for idx, image in enumerate(training_data):
-        training_matrix[:, idx] = np.reshape(image, (128 * 128, 1))
+    training_idx = 0
+    testing_idx = 0
 
-    return training_matrix
+    for obj_num_idx, angle_idx in itertools.product(range(100), range(NUM_IMAGES)):
+        # There's 71 images, and each image's rotation is 5 times the index value.
+        # For example, image number 5 has a rotation of 5 * 5 = 25 degrees.
+        #
+        # The `angle_idx` is a proxy for the actual angle of rotation of the image.
+        angle = angle_idx * 5
+        # Similarly, `obj_num_idx` is a proxy for the actual object number.
+        obj_num = obj_num_idx + 1
 
-def coil_20_unprocessed_training_data_loader():
-    # COIL 20 Unprocessed images are 448 x 416
-    training_data, _ = coil_20_unprocessed_path_generator()
+        image = load_image(dir_name, obj_num, angle)
+        datum = (obj_num, angle, image)
 
-    training_data = image_loader(training_data)
+        if angle_idx in testing_list[obj_num_idx]:
+            testing[testing_idx] = datum
+            testing_idx += 1
+        else:
+            training[training_idx] = datum
+            training_idx += 1
 
-    training_matrix = np.ndarray(shape=(448 * 416, len(training_data)), dtype=np.float64)
-
-    for idx, image in enumerate(training_data):
-        training_matrix[:, idx] = np.reshape(image, (448 * 416, 1))
-
-    return training_matrix
-
-def coil_100_training_data_loader():
-    # COIL 100 images are 128 x 128
-    training_data, _ = coil_100_path_generator()
-
-    training_data = image_loader(training_data)
-
-    training_matrix = np.ndarray(shape=(128 * 128, len(training_data)), dtype=np.float64)
-
-    for idx, image in enumerate(training_data):
-        training_matrix[:, idx] = np.reshape(image, (128 * 128, 1))
-
-    return training_matrix
+    return training, testing
 
 if __name__ == "__main__":
-    training, testing = coil_20_processed_path_generator()
-    print("Training:")
-    print('\n'.join(map(str, training)))
-    print("Testing:")
-    print('\n'.join(map(str, testing)))
-    # print(len(training))
-    # print(len(testing))
+    # training, testing = coil_20_data_loader()
+    training, testing = coil_100_data_loader()
