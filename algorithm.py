@@ -84,11 +84,23 @@ def recognition(mean_universal, mean_object, eigenvectors_universal, eigenvector
 
 if __name__ == "__main__":
     training, testing = coil_20_data_loader()
+    print("Training Phase")
     mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = generate_offline_data(training)
+
+    print("Testing Phase")
     precision = 5
     angle_values = np.arange(0,360,precision)
 
-    print("Actual vs Estimated")
+    num_tests = len(testing)
+    accurate_count = np.zeros(2)
+    error = 0
+    # print("Actual vs Estimated")
     for object_id_true, angle_true , image in testing:
         object_id, angle, _ = recognition(mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object, image, angle_values)
-        print("Object:", [object_id_true, object_id], "Angle:", [angle_true, angle])
+        # print("Object:", [object_id_true, object_id], "Angle:", [angle_true, angle])
+        accurate_count[0] += (object_id_true == object_id)
+        accurate_count[1] += (angle_true == angle)&(object_id_true == object_id)
+        error += abs(angle_true - angle)
+    print("Object Recognition: ", 100*accurate_count[0]/num_tests)
+    print("Pose Estimation:", 100*accurate_count[1]/num_tests)
+    print("Mean Pose error:", error/num_tests)
