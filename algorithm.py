@@ -5,6 +5,7 @@ from data_loader import coil_20_data_loader
 
 if __name__ == "__main__":
     training, testing = coil_20_data_loader()
+    training.sort()
 
     vectors_universal = np.zeros((IMAGE_SIZE, NUM_OBJECTS*NUM_TRAINING_IMAGES))
     vectors_object = np.zeros((NUM_OBJECTS, IMAGE_SIZE, NUM_TRAINING_IMAGES))
@@ -17,11 +18,11 @@ if __name__ == "__main__":
         object_angles[object_id][idx % NUM_TRAINING_IMAGES] = angle
 
     mean_universal = np.mean(vectors_universal, axis = 1)
-    X_universal = (vectors_universal.T - mean_universal).T
+    X_universal = vectors_universal - mean_universal.reshape((IMAGE_SIZE,1))
 
     mean_object = np.zeros((IMAGE_SIZE, NUM_OBJECTS))
     for i, object_vectors in enumerate(vectors_object):
         mean_object[:, i] = np.mean(object_vectors, axis = 1)
-    X_object = (vectors_object.T - mean_object).T
+    X_object = vectors_object - (mean_object.T).reshape(NUM_OBJECTS,IMAGE_SIZE,1)
 
     print(X_universal.shape, X_object[0].shape)
