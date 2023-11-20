@@ -1,6 +1,6 @@
 import numpy as np
 
-from constants import IMAGE_SIZE, NUM_OBJECTS, NUM_IMAGES, NUM_TESTING_IMAGES, NUM_TRAINING_IMAGES
+from constants import IMAGE_SIZE, NUM_OBJECTS, NUM_IMAGES, NUM_TESTING_IMAGES, NUM_TRAINING_IMAGES, PCA_THRESHOLD
 from data_loader import coil_20_data_loader
 
 if __name__ == "__main__":
@@ -26,3 +26,11 @@ if __name__ == "__main__":
     X_object = vectors_object - (mean_object.T).reshape(NUM_OBJECTS,IMAGE_SIZE,1)
 
     print(X_universal.shape, X_object[0].shape)
+    
+    L_universal = X_universal.T @ X_universal
+    eigenvalues_universal, eigenvectors = np.linalg.eig(L_universal)
+    eigenvectors_universal = X_universal @ eigenvectors
+    num_components = np.searchsorted(np.cumsum(eigenvalues_universal)/sum(eigenvalues_universal), PCA_THRESHOLD, side = "left")+1
+    eigenvectors_universal = eigenvectors_universal[:,:num_components]
+    eigenvalues_universal = eigenvalues_universal[:num_components]
+    print(eigenvectors_universal.shape)
