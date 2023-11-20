@@ -31,4 +31,4 @@ NUM_TRAINING_IMAGES = floor(NUM_IMAGES * TRAINING_PERCENTAGE)
 # Once again, this value is set according to the value of `NUM_TRAINING_IMAGES` in case it is needed.
 NUM_TESTING_IMAGES = NUM_IMAGES - NUM_TRAINING_IMAGES
 
-PCA_THRESHOLD = 0.9
+PCA_THRESHOLD = 0.8
