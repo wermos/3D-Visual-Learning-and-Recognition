@@ -28,6 +28,12 @@ if __name__ == "__main__":
 
     print(X_universal.shape, X_object[0].shape)
     
-    num_components = np.zeros(NUM_OBJECTS+1, dtype = int)
-    eigenvalues_universal, eigenvectors_universal, num_components[-1] = PCA(X_universal)
-    print(num_components[-1], eigenvectors_universal.shape)
+    eigenvalues_universal, eigenvectors_universal, num_components_universal = PCA(X_universal)
+
+    num_components_object = np.zeros(NUM_OBJECTS, dtype = int)
+    eigenvalues_object = [None] * NUM_OBJECTS
+    eigenvectors_object = [None] * NUM_OBJECTS
+    for i in range(NUM_OBJECTS):
+        eigenvalues_object[i], eigenvectors_object[i], num_components_object[i] = PCA(X_object[i])
+
+    print(num_components_universal, eigenvectors_universal.shape, num_components_object[0], eigenvectors_object[0].shape)
