@@ -21,8 +21,8 @@ if __name__ == "__main__":
     X_universal = vectors_universal - mean_universal.reshape((IMAGE_SIZE,1))
 
     mean_object = np.zeros((IMAGE_SIZE, NUM_OBJECTS))
-    for i, object_vectors in enumerate(vectors_object):
-        mean_object[:, i] = np.mean(object_vectors, axis = 1)
+    for idx, object_vectors in enumerate(vectors_object):
+        mean_object[:, idx] = np.mean(object_vectors, axis = 1)
     X_object = vectors_object - (mean_object.T).reshape(NUM_OBJECTS,IMAGE_SIZE,1)
 
     print(X_universal.shape, X_object[0].shape)
