@@ -19,3 +19,9 @@ def load_image(dir_name, obj_num, angle):
         return np.reshape(img, (IMAGE_SIZE, 1))
     else:
         print(f"Failed to load image: `{filename}`")
+
+def cubic_splines_to_vector(manifolds, vector):
+    return [manifold(vector) for manifold in manifolds]
+
+def normalize(image):
+    return np.squeeze(image / np.linalg.norm(image))
