@@ -1,5 +1,7 @@
 from math import floor
 
+RANDOM_SEED = 7 # Set this to None for truly (pseudo)random behavior.
+
 NUM_OBJECTS = 20
 # The number of images we have of each object
 NUM_IMAGES = 72

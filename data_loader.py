@@ -1,8 +1,8 @@
 import itertools
 import numpy as np
-from random import sample
+import random
 
-from constants import IMAGE_SIZE, NUM_IMAGES, NUM_TESTING_IMAGES, NUM_TRAINING_IMAGES
+from constants import RANDOM_SEED, IMAGE_SIZE, NUM_IMAGES, NUM_TESTING_IMAGES, NUM_TRAINING_IMAGES
 from util import load_image
 
 # Define the data type for the tuple elements
@@ -15,8 +15,11 @@ def classifier(num_objects):
     # We store the list of testing angles for each object, since that's fewer
     # things to store in memory
     testing_list = []
+    
+    random.seed(RANDOM_SEED)
+    
     for _ in range(num_objects):
-        testing_list.append(sample(range(NUM_IMAGES), k=NUM_TESTING_IMAGES))
+        testing_list.append(random.sample(range(NUM_IMAGES), k=NUM_TESTING_IMAGES))
 
     return testing_list
 
