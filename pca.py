@@ -13,4 +13,4 @@ def PCA(datapoints):
     eigenvectors = datapoints @ eigenvectors[:,:num_components]
     eigenvectors = eigenvectors / np.linalg.norm(eigenvectors, axis = 0)
     eigenvalues = eigenvalues[:num_components]
-    return eigenvalues, eigenvectors, num_components, mean
+    return eigenvalues, eigenvectors, mean

@@ -20,39 +20,25 @@ def train_model(training_data):
         object_angles[object_id][idx % NUM_TRAINING_IMAGES] = angle
 
     # computing eigenspaces
-    _, eigenvectors_universal, num_components_universal, mean_universal = PCA(vectors_universal)
+    _, eigenvectors_universal, mean_universal = PCA(vectors_universal)
 
-    num_components_object = np.zeros(NUM_OBJECTS, dtype = int)
     eigenvectors_object = [None] * NUM_OBJECTS
     mean_object = np.zeros((IMAGE_SIZE, NUM_OBJECTS))
     for object_id in range(NUM_OBJECTS):
-        _, eigenvectors_object[object_id], num_components_object[object_id], mean_object[:, object_id] = PCA(vectors_object[object_id])
-
-    # print("size of eignevectors:", eigenvectors_universal.shape, eigenvectors_object[0].shape)
-    # print("number of components:", num_components_universal, num_components_object)
+        _, eigenvectors_object[object_id], mean_object[:, object_id] = PCA(vectors_object[object_id])
 
     # computing manifolds (parametric appearance representation)
-    eigencoefficients_universal = [None] * NUM_OBJECTS
-    eigencoefficients_object = [None] * NUM_OBJECTS
-    for object_id in range(NUM_OBJECTS):
-        eigencoefficients_universal[object_id] = np.zeros((num_components_universal, NUM_TRAINING_IMAGES))
-        eigencoefficients_object[object_id] = np.zeros((num_components_object[object_id], NUM_TRAINING_IMAGES))
+    manifolds_universal = [compute_manifold_for_object(eigenvectors_universal, vectors_object[object_id], object_angles[object_id], mean_universal) for object_id in range(NUM_OBJECTS)]
+    manifolds_object = [compute_manifold_for_object(eigenvectors_object[object_id], vectors_object[object_id], object_angles[object_id], mean_object[:, object_id]) for object_id in range(NUM_OBJECTS)]
 
-    for object_id, object_vectors in enumerate(vectors_object):
-        for angle_id, image in enumerate(object_vectors.T):
-            eigencoefficients_universal[object_id][:, angle_id] = np.dot(image - mean_universal, eigenvectors_universal)
-            eigencoefficients_object[object_id][:, angle_id] = np.dot(image - mean_object[:, object_id], eigenvectors_object[object_id])
-
-    # print("size of eigencoefficients:", eigencoefficients_universal[0].shape, [eigencoefficients_object[idx].shape for idx in range(NUM_OBJECTS)])
-
-    manifolds_universal = [None] * NUM_OBJECTS
-    manifolds_object = [None] * NUM_OBJECTS
-    for object_id in range(NUM_OBJECTS):
-        manifolds_universal[object_id] = [CubicSpline(np.append(object_angles[object_id], 360+object_angles[object_id][0]), np.append(eigencoefficients_universal[object_id][component_id], eigencoefficients_universal[object_id][component_id][0]), bc_type = 'periodic') for component_id in range(num_components_universal)]
-        manifolds_object[object_id] = [CubicSpline(np.append(object_angles[object_id], 360+object_angles[object_id][0]), np.append(eigencoefficients_object[object_id][component_id], eigencoefficients_object[object_id][component_id][0]), bc_type = 'periodic') for component_id in range(num_components_object[object_id])]
-
-    # print("number of manifolds:", len(manifolds_universal), len(manifolds_object))
     return mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object
+
+def compute_manifold_for_object(eigenvectors, object_vectors, object_angles, mean):
+    num_components = (eigenvectors.shape)[1]
+    eigencoefficients = np.zeros((num_components, NUM_TRAINING_IMAGES))
+    for idx, image in enumerate(object_vectors.T):
+        eigencoefficients[:, idx] = np.dot(image - mean, eigenvectors)
+    return [CubicSpline(np.append(object_angles, 360+object_angles[0]), np.append(eigencoefficients[component_id], eigencoefficients[component_id][0]), bc_type = 'periodic') for component_id in range(num_components)]
 
 def evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values):
     points_universal = np.array([cubic_splines_to_vector(manifolds_universal[object_id], angle_values) for object_id in range(NUM_OBJECTS)])
