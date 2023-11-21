@@ -20,22 +20,13 @@ def train_model(training_data):
         object_angles[object_id][idx % NUM_TRAINING_IMAGES] = angle
 
     # computing eigenspaces
-    mean_universal = np.mean(vectors_universal, axis = 1)
-    X_universal = vectors_universal - mean_universal.reshape((IMAGE_SIZE,1))
-
-    mean_object = np.zeros((IMAGE_SIZE, NUM_OBJECTS))
-    for object_id, object_vectors in enumerate(vectors_object):
-        mean_object[:, object_id] = np.mean(object_vectors, axis = 1)
-    X_object = vectors_object - (mean_object.T).reshape(NUM_OBJECTS,IMAGE_SIZE,1)
-
-    # print("size of X:", X_universal.shape, X_object[0].shape)
-    
-    _, eigenvectors_universal, num_components_universal = PCA(X_universal)
+    _, eigenvectors_universal, num_components_universal, mean_universal = PCA(vectors_universal)
 
     num_components_object = np.zeros(NUM_OBJECTS, dtype = int)
     eigenvectors_object = [None] * NUM_OBJECTS
+    mean_object = np.zeros((IMAGE_SIZE, NUM_OBJECTS))
     for object_id in range(NUM_OBJECTS):
-        _, eigenvectors_object[object_id], num_components_object[object_id] = PCA(X_object[object_id])
+        _, eigenvectors_object[object_id], num_components_object[object_id], mean_object[:, object_id] = PCA(vectors_object[object_id])
 
     # print("size of eignevectors:", eigenvectors_universal.shape, eigenvectors_object[0].shape)
     # print("number of components:", num_components_universal, num_components_object)
