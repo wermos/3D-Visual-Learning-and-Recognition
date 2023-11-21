@@ -2,7 +2,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 
 from constants import NUM_OBJECTS
-from data_loader import coil_20_data_loader
+from data_loader import coil_20_data_loader, coil_100_data_loader
 from train import train_model
 from util import normalize, cubic_splines_to_vector
 
@@ -28,8 +28,12 @@ def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigen
     return object_id, angle_values[angle_id], distance
 
 if __name__ == "__main__":
-    training, testing = coil_20_data_loader()
-    print("training initiated")
+    print("data loading initiated")
+    if NUM_OBJECTS == 20:
+        training, testing = coil_20_data_loader()
+    if NUM_OBJECTS == 100:
+        training, testing = coil_100_data_loader()
+    print("data loading completed...training initiated")
     mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = train_model(training)
     print("training completed...testing initiated")
     precision = 5
