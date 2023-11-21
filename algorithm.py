@@ -64,20 +64,23 @@ def generate_offline_data(training_data):
     # print("number of manifolds:", len(manifolds_universal), len(manifolds_object))
     return mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object
 
-def recognition(mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object, image, angle_values):
+def evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values):
+    points_universal = np.array([cubic_splines_to_vector(manifolds_universal[object_id], angle_values) for object_id in range(NUM_OBJECTS)])
+    points_object = [np.array(cubic_splines_to_vector(manifolds_object[object_id], angle_values)) for object_id in range(NUM_OBJECTS)]
+    return points_universal, points_object
+
+def recognition(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object, points_universal, points_object, angle_values):
     image = normalize(image)
     num_components_universal = (eigenvectors_universal.shape)[1]
-    points = np.array([cubic_splines_to_vector(manifolds_universal[object_id], angle_values) for object_id in range(NUM_OBJECTS)])
     projection = np.dot(image-mean_universal, eigenvectors_universal)
-    distances = np.array([cdist(points[object_id].T, projection.reshape(1,num_components_universal), 'euclidean') for object_id in range(NUM_OBJECTS)])
+    distances = np.array([cdist(points_universal[object_id].T, projection.reshape(1,num_components_universal), 'euclidean') for object_id in range(NUM_OBJECTS)])
     distances_minimum = np.min(distances, axis = 1)
     object_id = np.argmin(distances_minimum)
     distance = [np.min(distances[object_id])]
 
     num_components_object = (eigenvectors_object[object_id].shape)[1]
-    points = np.array(cubic_splines_to_vector(manifolds_object[object_id], angle_values))
     projection = np.dot(image-mean_object[:, object_id], eigenvectors_object[object_id])
-    distances = np.array(cdist(points.T, projection.reshape(1,num_components_object), 'euclidean'))
+    distances = np.array(cdist(points_object[object_id].T, projection.reshape(1,num_components_object), 'euclidean'))
     angle_id = np.argmin(distances)
     distance.append(distances[angle_id][0])
     return object_id, angle_values[angle_id], distance
@@ -90,13 +93,13 @@ if __name__ == "__main__":
     print("Testing Phase")
     precision = 5
     angle_values = np.arange(0,360,precision)
-
+    points_universal, points_object = evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values)
     num_tests = len(testing)
     accurate_count = np.zeros(2)
     error = 0
     # print("Actual vs Estimated")
     for object_id_true, angle_true , image in testing:
-        object_id, angle, _ = recognition(mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object, image, angle_values)
+        object_id, angle, _ = recognition(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object, points_universal, points_object, angle_values)
         # print("Object:", [object_id_true, object_id], "Angle:", [angle_true, angle])
         accurate_count[0] += (object_id_true == object_id)
         accurate_count[1] += (angle_true == angle)&(object_id_true == object_id)
