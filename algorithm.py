@@ -7,7 +7,7 @@ from data_loader import coil_20_data_loader
 from pca import PCA
 from util import normalize, cubic_splines_to_vector
 
-def generate_offline_data(training_data):
+def train_model(training_data):
     # processing training data
     training_data.sort()
     vectors_universal = np.zeros((IMAGE_SIZE, NUM_OBJECTS*NUM_TRAINING_IMAGES))
@@ -68,7 +68,7 @@ def evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, ang
     points_object = [np.array(cubic_splines_to_vector(manifolds_object[object_id], angle_values)) for object_id in range(NUM_OBJECTS)]
     return points_universal, points_object
 
-def recognition(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, points_universal, points_object, angle_values):
+def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, points_universal, points_object, angle_values):
     image = normalize(image)
     num_components_universal = (eigenvectors_universal.shape)[1]
     projection = np.dot(image-mean_universal, eigenvectors_universal)
@@ -87,7 +87,7 @@ def recognition(image, mean_universal, mean_object, eigenvectors_universal, eige
 if __name__ == "__main__":
     training, testing = coil_20_data_loader()
     print("Training Phase")
-    mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = generate_offline_data(training)
+    mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = train_model(training)
 
     print("Testing Phase")
     precision = 5
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     error = 0
     # print("Actual vs Estimated")
     for object_id_true, angle_true , image in testing:
-        object_id, angle, _ = recognition(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, points_universal, points_object, angle_values)
+        object_id, angle, _ = test_image(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, points_universal, points_object, angle_values)
         # print("Object:", [object_id_true, object_id], "Angle:", [angle_true, angle])
         accurate_count[0] += (object_id_true == object_id)
         accurate_count[1] += (angle_true == angle)&(object_id_true == object_id)
