@@ -28,11 +28,9 @@ def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigen
     return object_id, angle_values[angle_id], distance
 
 if __name__ == "__main__":
+    function_mapping = {20 : coil_20_data_loader, 100 : coil_100_data_loader}
     print("data loading initiated")
-    if NUM_OBJECTS == 20:
-        training, testing = coil_20_data_loader()
-    if NUM_OBJECTS == 100:
-        training, testing = coil_100_data_loader()
+    training, testing = function_mapping[NUM_OBJECTS]()
     print("data loading completed...training initiated")
     mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = train_model(training)
     print("training completed...testing initiated")
