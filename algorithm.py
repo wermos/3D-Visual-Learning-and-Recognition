@@ -2,7 +2,7 @@ import numpy as np
 from scipy.interpolate import CubicSpline
 from scipy.spatial.distance import cdist
 
-from constants import IMAGE_SIZE, NUM_OBJECTS, NUM_IMAGES, NUM_TESTING_IMAGES, NUM_TRAINING_IMAGES
+from constants import IMAGE_SIZE, NUM_OBJECTS, NUM_TRAINING_IMAGES
 from data_loader import coil_20_data_loader
 from pca import PCA
 from util import normalize, cubic_splines_to_vector
@@ -30,7 +30,7 @@ def generate_offline_data(training_data):
 
     # print("size of X:", X_universal.shape, X_object[0].shape)
     
-    eigenvalues_universal, eigenvectors_universal, num_components_universal = PCA(X_universal)
+    _, eigenvectors_universal, num_components_universal = PCA(X_universal)
 
     num_components_object = np.zeros(NUM_OBJECTS, dtype = int)
     eigenvalues_object = [None] * NUM_OBJECTS
