@@ -33,10 +33,9 @@ def generate_offline_data(training_data):
     _, eigenvectors_universal, num_components_universal = PCA(X_universal)
 
     num_components_object = np.zeros(NUM_OBJECTS, dtype = int)
-    eigenvalues_object = [None] * NUM_OBJECTS
     eigenvectors_object = [None] * NUM_OBJECTS
     for object_id in range(NUM_OBJECTS):
-        eigenvalues_object[object_id], eigenvectors_object[object_id], num_components_object[object_id] = PCA(X_object[object_id])
+        _, eigenvectors_object[object_id], num_components_object[object_id] = PCA(X_object[object_id])
 
     # print("size of eignevectors:", eigenvectors_universal.shape, eigenvectors_object[0].shape)
     # print("number of components:", num_components_universal, num_components_object)
