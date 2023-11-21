@@ -3,7 +3,7 @@ import numpy as np
 import random
 
 from constants import RANDOM_SEED, IMAGE_SIZE, NUM_IMAGES, NUM_TESTING_IMAGES, NUM_TRAINING_IMAGES
-from util import load_image
+from util import load_grayscale_image, load_color_image
 
 # Define the data type for the tuple elements
 dtype = np.dtype([('object number', np.ubyte), ('angle', np.ushort), ('image data', (np.double, (IMAGE_SIZE, 1)))])
@@ -42,7 +42,7 @@ def coil_20_data_loader():
         # Similarly, `obj_num_idx` is a proxy for the actual object number.
         obj_num = obj_num_idx + 1
 
-        image = load_image(dir_name, obj_num, angle_idx)
+        image = load_grayscale_image(dir_name, obj_num, angle_idx)
         datum = (obj_num_idx, angle_idx * 5, image)
 
         if angle_idx in testing_list[obj_num_idx]:
@@ -74,7 +74,7 @@ def coil_100_data_loader():
         # Similarly, `obj_num_idx` is a proxy for the actual object number.
         obj_num = obj_num_idx + 1
 
-        image = load_image(dir_name, obj_num, angle)
+        image = load_color_image(dir_name, obj_num, angle)
         datum = (obj_num_idx, angle, image)
 
         if angle_idx in testing_list[obj_num_idx]:
