@@ -7,21 +7,26 @@ from tqdm import tqdm
 from test import process
 import constants
 
+def update_constants(pca_threshold, training_data_split):
+    constants.PCA_THRESHOLD = pca_threshold
+    constants.TRAINING_PERCENTAGE = training_data_split
+    constants.TESTING_PERCENTAGE = 1 - constants.TRAINING_PERCENTAGE
+    constants.NUM_TRAINING_IMAGES = floor(constants.NUM_IMAGES * constants.TRAINING_PERCENTAGE)
+    constants.NUM_TESTING_IMAGES = constants.NUM_IMAGES - constants.NUM_TRAINING_IMAGES
+
 if __name__ == "__main__":
     sys.stdout = open('outputs/combined.txt','w')
     pca_thresholds = np.arange(0.1,1,0.05)
     training_data_splits = np.arange(0.1,1,0.05)
+    
     accuracy_object = np.zeros((len(pca_thresholds), len(training_data_splits)))
     accuracy_pose = np.zeros((len(pca_thresholds), len(training_data_splits)))
     mean_error = np.zeros((len(pca_thresholds), len(training_data_splits)))
     
     for idx, pca_threshold in tqdm(list(enumerate(pca_thresholds)), desc="Generating data"):
         for jdx, training_data_split in enumerate(training_data_splits):
-            constants.PCA_THRESHOLD = pca_threshold
-            constants.TRAINING_PERCENTAGE = training_data_split
-            constants.TESTING_PERCENTAGE = 1 - constants.TRAINING_PERCENTAGE
-            constants.NUM_TRAINING_IMAGES = floor(constants.NUM_IMAGES * constants.TRAINING_PERCENTAGE)
-            constants.NUM_TESTING_IMAGES = constants.NUM_IMAGES - constants.NUM_TRAINING_IMAGES
+            update_constants(pca_threshold, training_data_split)
+            
             accuracy_object[idx][jdx], accuracy_pose[idx][jdx], mean_error[idx][jdx] = process(False)
             print(format(pca_threshold, ".2f"), format(training_data_split, ".2f"), format(accuracy_object[idx][jdx], ".3%"), format(accuracy_pose[idx][jdx], ".3%"), format(mean_error[idx][jdx], ".3f") + "\u00b0")
 
