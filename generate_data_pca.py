@@ -1,46 +1,28 @@
-import os
-import sys
 import numpy as np
-import matplotlib.pyplot as plt
 from tqdm import tqdm
 
+from plot_util import generate_pca_threshold_constants_list, plot_pca_graphs
 from test import process
-import constants
 
-def update_constants(pca_threshold):
-    constants.PCA_THRESHOLD = pca_threshold
+def process_and_write(constants_tuple):
+    idx, constants = constants_tuple
+    accuracy_object[idx], accuracy_pose[idx], mean_error[idx] = process(constants)
+    
+    f = open('outputs/pca.txt','a')
+    f.write(f"{constants.PCA_THRESHOLD:.2f} {accuracy_object[idx]:.3%} {accuracy_pose[idx]:.3%} {mean_error[idx]:.3f}\u00b0\n")
+    f.close()
 
-if __name__ == "__main__":
-    sys.stdout = open('outputs/pca.txt','w')
-    pca_thresholds = np.arange(0.05,1,0.05)
-    accuracy_object = np.zeros(len(pca_thresholds))
-    accuracy_pose = np.zeros(len(pca_thresholds))
-    mean_error = np.zeros(len(pca_thresholds))
-    for idx, pca_threshold in tqdm(list(enumerate(pca_thresholds)), desc="Generating data"):
-        update_constants(pca_threshold)
-        accuracy_object[idx], accuracy_pose[idx], mean_error[idx] = process(False)
-        print(format(pca_threshold, ".2f"), format(accuracy_object[idx], ".3%"), format(accuracy_pose[idx], ".3%"), format(mean_error[idx], ".3f") + "\u00b0")
+pca_thresholds = np.arange(0.1,1,0.05)
+accuracy_object = np.zeros(len(pca_thresholds))
+accuracy_pose = np.zeros(len(pca_thresholds))
+mean_error = np.zeros(len(pca_thresholds))
 
-    plots_directory = 'plots/pca_threshold/'
-    fig_1, ax_1 = plt.subplots()
-    ax_1.set_xlabel('PCA threshold')
-    ax_1.set_xlim([0,1])
-    ax_1.set_xticks(np.linspace(0,1,11))
-    ax_1.set_ylabel('Accuracy')
-    ax_1.set_title('Accuracy with varying PCA Threshold')
-    ax_1.plot(pca_thresholds, accuracy_object, '-o', markersize=5)
-    ax_1.plot(pca_thresholds, accuracy_pose, '-o', markersize=5)
-    ax_1.set_ylim(bottom=0)
-    ax_1.legend(["Object Accuracy", "Pose Accuracy"])
-    fig_1.savefig(plots_directory+'accuracy.pdf', dpi=200)
-    fig_1.savefig(plots_directory+'accuracy.png', dpi=200)
+constants_list = generate_pca_threshold_constants_list(pca_thresholds)
 
-    fig_2, ax_2 = plt.subplots()
-    ax_2.set_xlabel('PCA threshold')
-    ax_2.set_xlim([0,1])
-    ax_2.set_xticks(np.linspace(0,1,11))
-    ax_2.set_ylabel('Average pose error (in degrees)')
-    ax_2.set_title('Average pose error with varying PCA Threshold')
-    ax_2.plot(pca_thresholds, mean_error, '-o', markersize=5)
-    fig_2.savefig(plots_directory+'mean_error.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'mean_error.png', dpi=200)
+# Clearing file content
+open('outputs/pca.txt','w').close()
+
+for constant in tqdm(constants_list, desc="Generating data"):
+    process_and_write(constant)
+
+plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error)

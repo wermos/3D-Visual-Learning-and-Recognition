@@ -5,6 +5,7 @@ import numpy as np
 
 import constants
 
+# Combined
 def update_combined_constants(num_objs, pca_threshold, training_data_split):
     # Constants like the number of images, image width, and image height do not
     # change across the datasets.
@@ -45,6 +46,7 @@ def generate_combined_constants_list(pca_thresholds, training_data_splits, coil2
     else:
         return list(map(generate_combined_constants_list_helper_coil100, constants))
 
+# Training
 def update_training_constants(num_objs, training_data_split):
     # Constants like the number of images, image width, and image height do not
     # change across the datasets.
@@ -76,6 +78,39 @@ def generate_training_constants_list(training_data_splits, coil20=True):
         return list(map(generate_training_constants_list_helper_coil20, enumerate(training_data_splits)))
     else:
         return list(map(generate_training_constants_list_helper_coil100, enumerate(training_data_splits)))
+
+# PCA Thresholds
+def update_pca_threshold_constants(num_objs, pca_threshold):
+    # Constants like the number of images, image width, and image height do not
+    # change across the datasets.
+    consts = constants.Constants(num_objs, constants.NUM_IMAGES,
+                                 constants.IMAGE_HEIGHT, constants.IMAGE_WIDTH,
+                                 constants.TRAINING_PERCENTAGE, pca_threshold)
+    return consts
+
+def update_pca_threshold_constants_coil20(pca_threshold):
+    return update_pca_threshold_constants(20, pca_threshold)
+
+def update_pca_threshold_constants_coil100(pca_threshold):
+    return update_pca_threshold_constants(100, pca_threshold)
+
+def generate_pca_threshold_constants_list_helper_coil20(data):
+    idx, pca_threshold = data
+    const = update_pca_threshold_constants_coil20(pca_threshold)
+    
+    return (idx, const)
+
+def generate_pca_threshold_constants_list_helper_coil100(data):
+    idx, pca_threshold = data
+    const = update_pca_threshold_constants_coil100(pca_threshold)
+    
+    return (idx, const)
+
+def generate_pca_threshold_constants_list(pca_thresholds, coil20=True):    
+    if coil20:
+        return list(map(generate_pca_threshold_constants_list_helper_coil20, enumerate(pca_thresholds)))
+    else:
+        return list(map(generate_pca_threshold_constants_list_helper_coil100, enumerate(pca_thresholds)))
 
 def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, accuracy_pose, mean_error):
     plots_directory = 'plots/combined/'
@@ -117,7 +152,7 @@ def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, 
     fig_3.savefig(plots_directory+'mean_error.pdf', dpi=200)
     fig_2.savefig(plots_directory+'mean_error.png')
 
-def plot_pca_graphs(pca_thresholds, accuracy_object, mean_error):
+def plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error):
     plots_directory = 'plots/pca_threshold/'
     fig_1, ax_1 = plt.subplots()
     ax_1.set_xlabel('PCA threshold')
