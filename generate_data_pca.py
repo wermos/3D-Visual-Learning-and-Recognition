@@ -7,6 +7,9 @@ from tqdm import tqdm
 from test import process
 import constants
 
+def update_constants(pca_threshold):
+    constants.PCA_THRESHOLD = pca_threshold
+
 if __name__ == "__main__":
     sys.stdout = open('outputs/pca.txt','w')
     pca_thresholds = np.arange(0.05,1,0.05)
@@ -14,7 +17,7 @@ if __name__ == "__main__":
     accuracy_pose = np.zeros(len(pca_thresholds))
     mean_error = np.zeros(len(pca_thresholds))
     for idx, pca_threshold in tqdm(list(enumerate(pca_thresholds)), desc="Generating data"):
-        constants.PCA_THRESHOLD = pca_threshold
+        update_constants(pca_threshold)
         accuracy_object[idx], accuracy_pose[idx], mean_error[idx] = process(False)
         print(format(pca_threshold, ".2f"), format(accuracy_object[idx], ".3%"), format(accuracy_pose[idx], ".3%"), format(mean_error[idx], ".3f") + "\u00b0")
 
