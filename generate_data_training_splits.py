@@ -14,7 +14,7 @@ if __name__ == "__main__":
     accuracy_object = np.zeros(len(training_data_splits))
     accuracy_pose = np.zeros(len(training_data_splits))
     mean_error = np.zeros(len(training_data_splits))
-    for idx, training_data_split in tqdm(enumerate(training_data_splits), desc="generating data..."):
+    for idx, training_data_split in tqdm(list(enumerate(training_data_splits)), desc="generating data..."):
         constants.TRAINING_PERCENTAGE = training_data_split
         constants.TESTING_PERCENTAGE = 1 - constants.TRAINING_PERCENTAGE
         constants.NUM_TRAINING_IMAGES = floor(constants.NUM_IMAGES * constants.TRAINING_PERCENTAGE)
