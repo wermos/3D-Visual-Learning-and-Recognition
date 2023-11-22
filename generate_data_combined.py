@@ -1,4 +1,3 @@
-import os
 import sys
 from math import floor
 import numpy as np
@@ -15,7 +14,8 @@ if __name__ == "__main__":
     accuracy_object = np.zeros((len(pca_thresholds), len(training_data_splits)))
     accuracy_pose = np.zeros((len(pca_thresholds), len(training_data_splits)))
     mean_error = np.zeros((len(pca_thresholds), len(training_data_splits)))
-    for idx, pca_threshold in tqdm(enumerate(pca_thresholds), desc="generating data..."):
+    
+    for idx, pca_threshold in tqdm(list(enumerate(pca_thresholds)), desc="Generating data"):
         for jdx, training_data_split in enumerate(training_data_splits):
             constants.PCA_THRESHOLD = pca_threshold
             constants.TRAINING_PERCENTAGE = training_data_split
