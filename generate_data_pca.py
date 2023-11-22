@@ -30,6 +30,7 @@ if __name__ == "__main__":
     ax_1.set_ylim(bottom=0)
     ax_1.legend(["Object Accuracy", "Pose Accuracy"])
     fig_1.savefig(plots_directory+'accuracy.pdf', dpi=200)
+    fig_1.savefig(plots_directory+'accuracy.png')
 
     fig_2, ax_2 = plt.subplots()
     ax_2.set_xlabel('PCA threshold')
@@ -39,3 +40,4 @@ if __name__ == "__main__":
     ax_2.set_title('Average pose error with varying PCA Threshold')
     ax_2.plot(pca_thresholds, mean_error, '-o', markersize=5)
     fig_2.savefig(plots_directory+'mean_error.pdf', dpi=200)
+    fig_2.savefig(plots_directory+'mean_error.png')
