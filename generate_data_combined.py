@@ -16,8 +16,8 @@ def update_constants(pca_threshold, training_data_split):
 
 if __name__ == "__main__":
     sys.stdout = open('outputs/combined.txt','w')
-    pca_thresholds = np.arange(0.1,1,0.05)
-    training_data_splits = np.arange(0.1,1,0.05)
+    pca_thresholds = np.arange(0.05,1,0.05)
+    training_data_splits = np.arange(0.05,1,0.05)
     
     accuracy_object = np.zeros((len(pca_thresholds), len(training_data_splits)))
     accuracy_pose = np.zeros((len(pca_thresholds), len(training_data_splits)))
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     ax_1.set_title('Object Accuracy with varying parameters')
     ax_1.plot_wireframe(pca_thresholds, training_data_splits, accuracy_object)
     fig_1.savefig(plots_directory+'accuracy_object.pdf', dpi=200)
-    fig_1.savefig(plots_directory+'accuracy_object.png')
+    fig_1.savefig(plots_directory+'accuracy_object.png', dpi=200)
 
     fig_2 = plt.figure()
     ax_2 = plt.axes(projection ='3d')
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     ax_2.set_title('Pose Accuracy with varying parameters')
     ax_2.plot_wireframe(pca_thresholds, training_data_splits, accuracy_pose)
     fig_2.savefig(plots_directory+'accuracy_pose.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'accuracy_pose.png')
+    fig_2.savefig(plots_directory+'accuracy_pose.png', dpi=200)
 
     fig_3 = plt.figure()
     ax_3 = plt.axes(projection ='3d')
@@ -68,4 +68,4 @@ if __name__ == "__main__":
     ax_3.set_title('Average pose error with varying parameters')
     ax_3.plot_wireframe(pca_thresholds, training_data_splits, mean_error)
     fig_3.savefig(plots_directory+'mean_error.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'mean_error.png')
+    fig_2.savefig(plots_directory+'mean_error.png', dpi=200)

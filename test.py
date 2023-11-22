@@ -46,7 +46,7 @@ def process(DEBUGGING):
         # print("Object:", [object_id_true, object_id], "Angle:", [angle_true, angle]) if DEBUGGING else None
         accurate_count[0] += (object_id_true == object_id)
         accurate_count[1] += (angle_true == angle)*(object_id_true == object_id)
-        error += abs(angle_true - angle)*(object_id_true == object_id)
+        error += min(abs(angle_true - angle), 360-abs(angle_true - angle))*(object_id_true == object_id)
     print("testing completed...generating stats\n") if DEBUGGING else None
     return accurate_count[0]/num_tests, accurate_count[1]/accurate_count[0], error/accurate_count[0]
 

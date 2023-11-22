@@ -10,11 +10,11 @@ import constants
 
 if __name__ == "__main__":
     sys.stdout = open('outputs/training_splits.txt','w')
-    training_data_splits = np.arange(0.1,1,0.1)
+    training_data_splits = np.arange(0.05,1,0.05)
     accuracy_object = np.zeros(len(training_data_splits))
     accuracy_pose = np.zeros(len(training_data_splits))
     mean_error = np.zeros(len(training_data_splits))
-    for idx, training_data_split in tqdm(list(enumerate(training_data_splits)), desc="generating data..."):
+    for idx, training_data_split in tqdm(list(enumerate(training_data_splits)), desc="Generating data"):
         constants.TRAINING_PERCENTAGE = training_data_split
         constants.TESTING_PERCENTAGE = 1 - constants.TRAINING_PERCENTAGE
         constants.NUM_TRAINING_IMAGES = floor(constants.NUM_IMAGES * constants.TRAINING_PERCENTAGE)
@@ -34,7 +34,7 @@ if __name__ == "__main__":
     ax_1.set_ylim(bottom=0)
     ax_1.legend(["Object Accuracy", "Pose Accuracy"])
     fig_1.savefig(plots_directory+'accuracy.pdf', dpi=200)
-    fig_1.savefig(plots_directory+'accuracy.png')
+    fig_1.savefig(plots_directory+'accuracy.png', dpi=200)
 
     fig_2, ax_2 = plt.subplots()
     ax_2.set_xlabel('Training Data Split')
@@ -44,4 +44,4 @@ if __name__ == "__main__":
     ax_2.set_title('Average pose error with varying Training Data Split')
     ax_2.plot(training_data_splits, mean_error, '-o', markersize=5)
     fig_2.savefig(plots_directory+'mean_error.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'mean_error.png')
+    fig_2.savefig(plots_directory+'mean_error.png', dpi=200)

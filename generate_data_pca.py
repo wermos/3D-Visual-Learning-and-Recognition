@@ -9,7 +9,7 @@ import constants
 
 if __name__ == "__main__":
     sys.stdout = open('outputs/pca.txt','w')
-    pca_thresholds = np.arange(0.1,1,0.05)
+    pca_thresholds = np.arange(0.05,1,0.05)
     accuracy_object = np.zeros(len(pca_thresholds))
     accuracy_pose = np.zeros(len(pca_thresholds))
     mean_error = np.zeros(len(pca_thresholds))
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     ax_1.set_ylim(bottom=0)
     ax_1.legend(["Object Accuracy", "Pose Accuracy"])
     fig_1.savefig(plots_directory+'accuracy.pdf', dpi=200)
-    fig_1.savefig(plots_directory+'accuracy.png')
+    fig_1.savefig(plots_directory+'accuracy.png', dpi=200)
 
     fig_2, ax_2 = plt.subplots()
     ax_2.set_xlabel('PCA threshold')
@@ -40,4 +40,4 @@ if __name__ == "__main__":
     ax_2.set_title('Average pose error with varying PCA Threshold')
     ax_2.plot(pca_thresholds, mean_error, '-o', markersize=5)
     fig_2.savefig(plots_directory+'mean_error.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'mean_error.png')
+    fig_2.savefig(plots_directory+'mean_error.png', dpi=200)
