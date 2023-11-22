@@ -1,21 +1,21 @@
 import numpy as np
 from scipy.spatial.distance import cdist
 
-from constants import NUM_OBJECTS, DEBUGGING
+import constants
 from data_loader import coil_20_data_loader, coil_100_data_loader
 from train import train_model
 from util import normalize, cubic_splines_to_vector
 
 def evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values):
-    manifold_points_universal = np.array([cubic_splines_to_vector(manifolds_universal[object_id], angle_values) for object_id in range(NUM_OBJECTS)])
-    manifold_points_object = [np.array(cubic_splines_to_vector(manifolds_object[object_id], angle_values)) for object_id in range(NUM_OBJECTS)]
+    manifold_points_universal = np.array([cubic_splines_to_vector(manifolds_universal[object_id], angle_values) for object_id in range(constants.NUM_OBJECTS)])
+    manifold_points_object = [np.array(cubic_splines_to_vector(manifolds_object[object_id], angle_values)) for object_id in range(constants.NUM_OBJECTS)]
     return manifold_points_universal, manifold_points_object
 
 def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifold_points_universal, manifold_points_object, angle_values):
     image = normalize(image)
     num_components_universal = (eigenvectors_universal.shape)[1]
     projection = np.dot(image-mean_universal, eigenvectors_universal)
-    distances = np.array([cdist(manifold_points_universal[object_id].T, projection.reshape(1,num_components_universal), 'euclidean') for object_id in range(NUM_OBJECTS)])
+    distances = np.array([cdist(manifold_points_universal[object_id].T, projection.reshape(1,num_components_universal), 'euclidean') for object_id in range(constants.NUM_OBJECTS)])
     distances_minimum = np.min(distances, axis = 1)
     object_id = np.argmin(distances_minimum)
     distance = [np.min(distances[object_id])]
@@ -30,7 +30,7 @@ def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigen
 def process(DEBUGGING):
     function_mapping = {20 : coil_20_data_loader, 100 : coil_100_data_loader}
     print("data loading initiated") if DEBUGGING else None
-    training, testing = function_mapping[NUM_OBJECTS]()
+    training, testing = function_mapping[constants.NUM_OBJECTS]()
     print("data loading completed...training initiated") if DEBUGGING else None
     mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = train_model(training)
     print("training completed...testing initiated") if DEBUGGING else None
@@ -51,7 +51,7 @@ def process(DEBUGGING):
     return accurate_count[0]/num_tests, accurate_count[1]/accurate_count[0], error/accurate_count[0]
 
 if __name__ == "__main__":
-    accuracy_object, accuracy_pose, mean_error = process(DEBUGGING)
+    accuracy_object, accuracy_pose, mean_error = process(constants.DEBUGGING)
     print("Object Recognition accuracy: ", format(accuracy_object, ".3%"))
     print("Pose Estimation accuracy:", format(accuracy_pose, ".3%"))
     print("Mean Pose error:", format(mean_error, ".3f") + "\u00b0")
