@@ -19,7 +19,7 @@ accuracy_object = np.zeros(len(training_data_splits))
 accuracy_pose = np.zeros(len(training_data_splits))
 mean_error = np.zeros(len(training_data_splits))
 
-constants_list = generate_training_constants_list(  training_data_splits)
+constants_list = generate_training_constants_list(training_data_splits)
 
 # Clearing file content
 open('outputs/training_splits.txt','w').close()
