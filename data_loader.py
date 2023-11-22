@@ -8,7 +8,7 @@ from util import load_grayscale_image, load_color_image
 # Define the data type for the tuple elements
 dtype = np.dtype([('object number', np.ubyte), ('angle', np.ushort), ('image data', (np.double, (constants.IMAGE_SIZE, 1)))])
 
-def classifier(num_objects):
+def classifier(consts):
     # Decides which angles go into the training set and the testing set, for
     # each object.
 
@@ -18,23 +18,23 @@ def classifier(num_objects):
     
     random.seed(constants.RANDOM_SEED)
     
-    for _ in range(num_objects):
-        testing_list.append(random.sample(range(constants.NUM_IMAGES), k=constants.NUM_TESTING_IMAGES))
+    for _ in range(consts.NUM_OBJECTS):
+        testing_list.append(random.sample(range(consts.NUM_IMAGES), k=consts.NUM_TESTING_IMAGES))
 
     return testing_list
 
-def coil_20_data_loader():
+def coil_20_data_loader(consts):
     dir_name = "./data/coil-20"
 
-    training = np.ndarray(20 * constants.NUM_TRAINING_IMAGES, dtype=dtype)
-    testing = np.ndarray(20 * constants.NUM_TESTING_IMAGES, dtype=dtype)
+    training = np.ndarray(20 * consts.NUM_TRAINING_IMAGES, dtype=dtype)
+    testing = np.ndarray(20 * consts.NUM_TESTING_IMAGES, dtype=dtype)
 
-    testing_list = classifier(20)
+    testing_list = classifier(consts)
 
     training_idx = 0
     testing_idx = 0
 
-    for obj_num_idx, angle_idx in itertools.product(range(20), range(constants.NUM_IMAGES)):
+    for obj_num_idx, angle_idx in itertools.product(range(20), range(consts.NUM_IMAGES)):
         # There's 71 images, and each image's rotation is 5 times the index value.
         # For example, image number 5 has a rotation of 5 * 5 = 25 degrees.
         #
@@ -54,18 +54,19 @@ def coil_20_data_loader():
 
     return training, testing
 
-def coil_100_data_loader():
+def coil_100_data_loader(consts):
     dir_name = "./data/coil-100"
 
-    training = np.ndarray(100 * constants.NUM_TRAINING_IMAGES, dtype=dtype)
-    testing = np.ndarray(100 * constants.NUM_TESTING_IMAGES, dtype=dtype)
+    training = np.ndarray(100 * consts.NUM_TRAINING_IMAGES, dtype=dtype)
+    testing = np.ndarray(100 * consts.NUM_TESTING_IMAGES, dtype=dtype)
 
-    testing_list = classifier(100)
+
+    testing_list = classifier(consts)
 
     training_idx = 0
     testing_idx = 0
 
-    for obj_num_idx, angle_idx in itertools.product(range(100), range(constants.NUM_IMAGES)):
+    for obj_num_idx, angle_idx in itertools.product(range(100), range(consts.NUM_IMAGES)):
         # There's 71 images, and each image's rotation is 5 times the index value.
         # For example, image number 5 has a rotation of 5 * 5 = 25 degrees.
         #
@@ -86,6 +87,14 @@ def coil_100_data_loader():
 
     return training, testing
 
+def data_loader(consts):
+    if consts.NUM_OBJECTS == 20:
+        return coil_20_data_loader(consts)
+    elif consts.NUM_OBJECTS== 100:
+        return coil_100_data_loader(consts)
+    else:
+        raise NotImplementedError(f"There is no dataset that we support that contains {consts.NUM_OBJECTS} images.")
+
 if __name__ == "__main__":
-    # training, testing = coil_20_data_loader()
-    training, testing = coil_100_data_loader()
+    # training, testing = data_loader(constants.COIL20_CONSTS)
+    training, testing = data_loader(constants.COIL100_CONSTS)
