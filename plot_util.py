@@ -125,7 +125,7 @@ def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, 
     ax_1.set_title('Object Accuracy with varying parameters')
     ax_1.plot_wireframe(pca_thresholds, training_data_splits, accuracy_object)
     fig_1.savefig(plots_directory+'accuracy_object.pdf', dpi=200)
-    fig_1.savefig(plots_directory+'accuracy_object.png')
+    fig_1.savefig(plots_directory+'accuracy_object.png', dpi=200)
 
     fig_2 = plt.figure()
     ax_2 = plt.axes(projection ='3d')
@@ -138,7 +138,7 @@ def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, 
     ax_2.set_title('Pose Accuracy with varying parameters')
     ax_2.plot_wireframe(pca_thresholds, training_data_splits, accuracy_pose)
     fig_2.savefig(plots_directory+'accuracy_pose.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'accuracy_pose.png')
+    fig_2.savefig(plots_directory+'accuracy_pose.png', dpi=200)
 
     fig_3 = plt.figure()
     ax_3 = plt.axes(projection ='3d')
@@ -150,7 +150,7 @@ def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, 
     ax_3.set_title('Average pose error with varying parameters')
     ax_3.plot_wireframe(pca_thresholds, training_data_splits, mean_error)
     fig_3.savefig(plots_directory+'mean_error.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'mean_error.png')
+    fig_2.savefig(plots_directory+'mean_error.png', dpi=200)
 
 def plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error):
     plots_directory = 'plots/pca_threshold/'
@@ -165,7 +165,7 @@ def plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error):
     ax_1.set_ylim(bottom=0)
     ax_1.legend(["Object Accuracy", "Pose Accuracy"])
     fig_1.savefig(plots_directory+'accuracy.pdf', dpi=200)
-    fig_1.savefig(plots_directory+'accuracy.png')
+    fig_1.savefig(plots_directory+'accuracy.png', dpi=200)
 
     fig_2, ax_2 = plt.subplots()
     ax_2.set_xlabel('PCA threshold')
@@ -175,7 +175,7 @@ def plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error):
     ax_2.set_title('Average pose error with varying PCA Threshold')
     ax_2.plot(pca_thresholds, mean_error, '-o', markersize=5)
     fig_2.savefig(plots_directory+'mean_error.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'mean_error.png')
+    fig_2.savefig(plots_directory+'mean_error.png', dpi=200)
 
 def plot_training_graphs(training_data_splits, accuracy_object, accuracy_pose, mean_error):
     plots_directory = 'plots/training_data_split/'
@@ -190,7 +190,7 @@ def plot_training_graphs(training_data_splits, accuracy_object, accuracy_pose, m
     ax_1.set_ylim(bottom=0)
     ax_1.legend(["Object Accuracy", "Pose Accuracy"])
     fig_1.savefig(plots_directory+'accuracy.pdf', dpi=200)
-    fig_1.savefig(plots_directory+'accuracy.png')
+    fig_1.savefig(plots_directory+'accuracy.png', dpi=200)
 
     fig_2, ax_2 = plt.subplots()
     ax_2.set_xlabel('Training Data Split')
@@ -200,4 +200,4 @@ def plot_training_graphs(training_data_splits, accuracy_object, accuracy_pose, m
     ax_2.set_title('Average pose error with varying Training Data Split')
     ax_2.plot(training_data_splits, mean_error, '-o', markersize=5)
     fig_2.savefig(plots_directory+'mean_error.pdf', dpi=200)
-    fig_2.savefig(plots_directory+'mean_error.png')
+    fig_2.savefig(plots_directory+'mean_error.png', dpi=200)
