@@ -1,7 +1,7 @@
 import numpy as np
 from tqdm import tqdm
 
-from plot_util import generate_constants_list, plot_combined_graphs
+from plot_util import generate_combined_constants_list, plot_combined_graphs
 from test import process
 
 def process_and_write(constants_tuple):
@@ -20,10 +20,11 @@ accuracy_object = np.zeros((len(pca_thresholds), len(training_data_splits)))
 accuracy_pose = np.zeros((len(pca_thresholds), len(training_data_splits)))
 mean_error = np.zeros((len(pca_thresholds), len(training_data_splits)))
 
-constants_list = generate_constants_list(pca_thresholds, training_data_splits)
+constants_list = generate_combined_constants_list(pca_thresholds, training_data_splits)
 
 # Clearing file content
 open('outputs/combined.txt','w').close()
+
 for constant in tqdm(constants_list, desc="Generating data"):
     process_and_write(constant)
 

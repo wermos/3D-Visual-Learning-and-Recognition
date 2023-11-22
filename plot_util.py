@@ -5,7 +5,7 @@ import numpy as np
 
 import constants
 
-def update_constants(num_objs, pca_threshold, training_data_split):
+def update_combined_constants(num_objs, pca_threshold, training_data_split):
     # Constants like the number of images, image width, and image height do not
     # change across the datasets.
     consts = constants.Constants(num_objs, constants.NUM_IMAGES,
@@ -13,37 +13,69 @@ def update_constants(num_objs, pca_threshold, training_data_split):
                                  training_data_split, pca_threshold)
     return consts
 
-def update_constants_coil20(pca_threshold, training_data_split):
-    return update_constants(20, pca_threshold, training_data_split)
+def update_combined_constants_coil20(pca_threshold, training_data_split):
+    return update_combined_constants(20, pca_threshold, training_data_split)
 
-def update_constants_coil100(pca_threshold, training_data_split):
-    return update_constants(100, pca_threshold, training_data_split)
+def update_combined_constants_coil100(pca_threshold, training_data_split):
+    return update_combined_constants(100, pca_threshold, training_data_split)
 
-def generate_constants_list_helper_coil20(data):
+def generate_combined_constants_list_helper_coil20(data):
     pca_enum, training_data_enum = data
     
     idx, pca_threshold = pca_enum
     jdx, training_data_split = training_data_enum
-    const = update_constants_coil20(pca_threshold, training_data_split)
+    const = update_combined_constants_coil20(pca_threshold, training_data_split)
     
     return (idx, jdx, const)
 
-def generate_constants_list_helper_coil100(data):
+def generate_combined_constants_list_helper_coil100(data):
     pca_enum, training_data_enum = data
     
     idx, pca_threshold = pca_enum
     jdx, training_data_split = training_data_enum
-    const = update_constants_coil100(pca_threshold, training_data_split)
+    const = update_combined_constants_coil100(pca_threshold, training_data_split)
     
     return (idx, jdx, const)
 
-def generate_constants_list(pca_thresholds, training_data_splits, coil20=True):
+def generate_combined_constants_list(pca_thresholds, training_data_splits, coil20=True):
     constants = itertools.product(enumerate(pca_thresholds), enumerate(training_data_splits))
     
     if coil20:
-        return list(map(generate_constants_list_helper_coil20, constants))
+        return list(map(generate_combined_constants_list_helper_coil20, constants))
     else:
-        return list(map(generate_constants_list_helper_coil100, constants))
+        return list(map(generate_combined_constants_list_helper_coil100, constants))
+
+def update_training_constants(num_objs, training_data_split):
+    # Constants like the number of images, image width, and image height do not
+    # change across the datasets.
+    consts = constants.Constants(num_objs, constants.NUM_IMAGES,
+                                 constants.IMAGE_HEIGHT, constants.IMAGE_WIDTH,
+                                 training_data_split, constants.PCA_THRESHOLD)
+    return consts
+
+def update_training_constants_coil20(training_data_split):
+    return update_training_constants(20, training_data_split)
+
+def update_training_constants_coil100(training_data_split):
+    return update_training_constants(100, training_data_split)
+
+def generate_training_constants_list_helper_coil20(data):
+    idx, training_data_split = data
+    const = update_training_constants_coil20(training_data_split)
+    
+    return (idx, const)
+
+def generate_training_constants_list_helper_coil100(data):
+    idx, training_data_split = data    
+    const = update_training_constants_coil100(training_data_split)
+    
+    return (idx, const)
+
+def generate_training_constants_list(training_data_splits, coil20=True):
+    if coil20:
+        return list(map(generate_training_constants_list_helper_coil20, enumerate(training_data_splits)))
+    else:
+        return list(map(generate_training_constants_list_helper_coil100, enumerate(training_data_splits)))
 
 def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, accuracy_pose, mean_error):
     plots_directory = 'plots/combined/'
