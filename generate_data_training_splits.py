@@ -14,12 +14,13 @@ def process_and_write(constants_tuple):
     f.write(f"{constants.TRAINING_PERCENTAGE:.2f} {accuracy_object[idx]:.3%} {accuracy_pose[idx]:.3%} {mean_error[idx]:.3f}\u00b0\n")
     f.close()
 
-training_data_splits = np.arange(0.1,1,0.1)
+training_data_splits = np.arange(0.05,1,0.05)
+
 accuracy_object = np.zeros(len(training_data_splits))
 accuracy_pose = np.zeros(len(training_data_splits))
 mean_error = np.zeros(len(training_data_splits))
 
-constants_list = generate_training_constants_list(training_data_splits)
+constants_list = generate_training_constants_list(training_data_splits, coil20=False)
 
 # Clearing file content
 open('outputs/training_splits.txt','w').close()

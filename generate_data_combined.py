@@ -13,8 +13,8 @@ def process_and_write(constants_tuple):
     f.write(f"{constants.PCA_THRESHOLD:.2f} {constants.TRAINING_PERCENTAGE:.2f} {accuracy_object[idx][jdx]:.3%} {accuracy_pose[idx][jdx]:.3%} {mean_error[idx][jdx]:.3f}\u00b0\n")
     f.close()
 
-pca_thresholds = np.arange(0.1,1,0.05)
-training_data_splits = np.arange(0.1,1,0.05)
+pca_thresholds = np.arange(0.05,1,0.05)
+training_data_splits = np.arange(0.05,1,0.05)
 
 accuracy_object = np.zeros((len(pca_thresholds), len(training_data_splits)))
 accuracy_pose = np.zeros((len(pca_thresholds), len(training_data_splits)))

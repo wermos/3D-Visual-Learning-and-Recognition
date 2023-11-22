@@ -12,12 +12,13 @@ def process_and_write(constants_tuple):
     f.write(f"{constants.PCA_THRESHOLD:.2f} {accuracy_object[idx]:.3%} {accuracy_pose[idx]:.3%} {mean_error[idx]:.3f}\u00b0\n")
     f.close()
 
-pca_thresholds = np.arange(0.1,1,0.05)
+pca_thresholds = np.arange(0.05,1,0.05)
+
 accuracy_object = np.zeros(len(pca_thresholds))
 accuracy_pose = np.zeros(len(pca_thresholds))
 mean_error = np.zeros(len(pca_thresholds))
 
-constants_list = generate_pca_threshold_constants_list(pca_thresholds)
+constants_list = generate_pca_threshold_constants_list(pca_thresholds, coil20=False)
 
 # Clearing file content
 open('outputs/pca.txt','w').close()
