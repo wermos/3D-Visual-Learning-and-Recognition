@@ -29,4 +29,4 @@ open('outputs/training_splits.txt','w').close()
 for constant in tqdm(constants_list, desc="Generating data"):
     process_and_write(constant)
 
-plot_training_graphs(training_data_splits, accuracy_object, accuracy_pose, mean_error)
+plot_training_graphs("coil-20/", training_data_splits, accuracy_object, accuracy_pose, mean_error)

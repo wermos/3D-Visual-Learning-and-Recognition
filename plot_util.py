@@ -114,8 +114,8 @@ def generate_pca_threshold_constants_list(pca_thresholds, coil20=True):
     else:
         return list(map(generate_pca_threshold_constants_list_helper_coil100, enumerate(pca_thresholds)))
 
-def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, accuracy_pose, mean_error):
-    plots_directory = 'plots/combined/'
+def plot_combined_graphs(data_dir, pca_thresholds, training_data_splits, accuracy_object, accuracy_pose, mean_error):
+    plots_directory = 'plots/' + data_dir + 'combined/'
     fig_1 = plt.figure()
     ax_1 = plt.axes(projection ='3d')
     ax_1.set_xlabel('PCA threshold')
@@ -154,8 +154,8 @@ def plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, 
     fig_3.savefig(plots_directory+'mean_error.pdf', dpi=200)
     fig_2.savefig(plots_directory+'mean_error.png', dpi=200)
 
-def plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error):
-    plots_directory = 'plots/pca_threshold/'
+def plot_pca_graphs(data_dir, pca_thresholds, accuracy_object, accuracy_pose, mean_error):
+    plots_directory = 'plots/' + data_dir + 'pca_threshold/'
     fig_1, ax_1 = plt.subplots()
     ax_1.set_xlabel('PCA threshold')
     ax_1.set_xlim([0,1])
@@ -179,8 +179,8 @@ def plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error):
     fig_2.savefig(plots_directory+'mean_error.pdf', dpi=200)
     fig_2.savefig(plots_directory+'mean_error.png', dpi=200)
 
-def plot_training_graphs(training_data_splits, accuracy_object, accuracy_pose, mean_error):
-    plots_directory = 'plots/training_data_split/'
+def plot_training_graphs(data_dir, training_data_splits, accuracy_object, accuracy_pose, mean_error):
+    plots_directory = 'plots/' + data_dir + 'training_data_split/'
     fig_1, ax_1 = plt.subplots()
     ax_1.set_xlabel('Training Data Split')
     ax_1.set_xlim([0,1])

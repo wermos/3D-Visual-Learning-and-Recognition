@@ -33,5 +33,6 @@ for constant in tqdm(constants_list, desc="Generating data"):
     process_and_write(constant)
 
 print("Plotting and saving the plots...")
-plot_combined_graphs(pca_thresholds, training_data_splits, accuracy_object, accuracy_pose, mean_error)
+
+plot_combined_graphs("coil-20/", pca_thresholds, training_data_splits, accuracy_object, accuracy_pose, mean_error)
 print("Finished.")

@@ -28,4 +28,4 @@ open('outputs/pca.txt','w').close()
 for constant in tqdm(constants_list, desc="Generating data"):
     process_and_write(constant)
 
-plot_pca_graphs(pca_thresholds, accuracy_object, accuracy_pose, mean_error)
+plot_pca_graphs("coil-20/", pca_thresholds, accuracy_object, accuracy_pose, mean_error)
