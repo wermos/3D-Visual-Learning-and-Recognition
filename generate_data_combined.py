@@ -1,3 +1,5 @@
+from os import environ
+environ['OMP_NUM_THREADS'] = '16'
 import numpy as np
 from tqdm import tqdm
 
@@ -24,6 +26,8 @@ constants_list = generate_combined_constants_list(pca_thresholds, training_data_
 
 # Clearing file content
 open('outputs/combined.txt','w').close()
+
+np.show_config()
 
 for constant in tqdm(constants_list, desc="Generating data"):
     process_and_write(constant)

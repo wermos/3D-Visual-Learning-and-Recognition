@@ -1,4 +1,5 @@
-import sys
+from os import environ
+environ['OMP_NUM_THREADS'] = '16'
 import numpy as np
 from tqdm import tqdm
 

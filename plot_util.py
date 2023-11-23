@@ -1,6 +1,8 @@
 import itertools
 
 import matplotlib.pyplot as plt
+from os import environ
+environ['OMP_NUM_THREADS'] = '16'
 import numpy as np
 
 import constants

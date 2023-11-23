@@ -1,4 +1,6 @@
 import itertools
+from os import environ
+environ['OMP_NUM_THREADS'] = '16'
 import numpy as np
 import random
 
