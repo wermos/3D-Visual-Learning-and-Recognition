@@ -1,4 +1,5 @@
 matplotlib
+numba
 numpy
 opencv-python
 scipy
