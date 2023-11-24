@@ -14,12 +14,10 @@ def classifier(num_objects):
 
     # We store the list of testing angles for each object, since that's fewer
     # things to store in memory
-    testing_list = []
     
     random.seed(constants.RANDOM_SEED)
     
-    for _ in range(num_objects):
-        testing_list.append(random.sample(range(constants.NUM_IMAGES), k=constants.NUM_TESTING_IMAGES))
+    testing_list = [random.sample(range(constants.NUM_IMAGES), k=constants.NUM_TESTING_IMAGES) for _ in range(constants.NUM_OBJECTS)]
 
     return testing_list
 
@@ -35,7 +33,7 @@ def coil_20_data_loader():
     testing_idx = 0
 
     for obj_num_idx, angle_idx in itertools.product(range(20), range(constants.NUM_IMAGES)):
-        # There's 71 images, and each image's rotation is 5 times the index value.
+        # There's 72 images, and each image's rotation is 5 times the index value.
         # For example, image number 5 has a rotation of 5 * 5 = 25 degrees.
         #
         # The `angle_idx` is a proxy for the actual angle of rotation of the image.
@@ -66,7 +64,7 @@ def coil_100_data_loader():
     testing_idx = 0
 
     for obj_num_idx, angle_idx in itertools.product(range(100), range(constants.NUM_IMAGES)):
-        # There's 71 images, and each image's rotation is 5 times the index value.
+        # There's 72 images, and each image's rotation is 5 times the index value.
         # For example, image number 5 has a rotation of 5 * 5 = 25 degrees.
         #
         # The `angle_idx` is a proxy for the actual angle of rotation of the image.
