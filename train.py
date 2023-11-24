@@ -5,6 +5,13 @@ import constants
 from pca import PCA
 from util import normalize
 
+def compute_manifold_for_object(eigenvectors, object_vectors, object_angles, mean):
+    num_components = (eigenvectors.shape)[1]
+    eigencoefficients = np.zeros((num_components, constants.NUM_TRAINING_IMAGES))
+    for idx, image in enumerate(object_vectors.T):
+        eigencoefficients[:, idx] = np.dot(image - mean, eigenvectors)
+    return [CubicSpline(np.append(object_angles, 360+object_angles[0]), np.append(eigencoefficients[component_id], eigencoefficients[component_id][0]), bc_type = 'periodic') for component_id in range(num_components)]
+
 def train_model(training_data):
     # processing training data
     training_data.sort()
@@ -30,10 +37,3 @@ def train_model(training_data):
     manifolds_object = [compute_manifold_for_object(eigenvectors_object[object_id], vectors_object[object_id], object_angles[object_id], mean_object[:, object_id]) for object_id in range(constants.NUM_OBJECTS)]
 
     return mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object
-
-def compute_manifold_for_object(eigenvectors, object_vectors, object_angles, mean):
-    num_components = (eigenvectors.shape)[1]
-    eigencoefficients = np.zeros((num_components, constants.NUM_TRAINING_IMAGES))
-    for idx, image in enumerate(object_vectors.T):
-        eigencoefficients[:, idx] = np.dot(image - mean, eigenvectors)
-    return [CubicSpline(np.append(object_angles, 360+object_angles[0]), np.append(eigencoefficients[component_id], eigencoefficients[component_id][0]), bc_type = 'periodic') for component_id in range(num_components)]
