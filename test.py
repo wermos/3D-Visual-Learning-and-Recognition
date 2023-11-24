@@ -27,7 +27,7 @@ def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigen
     distance.append(distances[angle_id][0])
     return object_id, angle_values[angle_id], distance
 
-def process(DEBUGGING):
+def process(DEBUGGING = False):
     function_mapping = {20 : coil_20_data_loader, 100 : coil_100_data_loader}
     print("data loading initiated") if DEBUGGING else None
     training, testing = function_mapping[constants.NUM_OBJECTS]()
@@ -51,7 +51,7 @@ def process(DEBUGGING):
     return accurate_count[0]/num_tests, accurate_count[1]/accurate_count[0], error/accurate_count[0]
 
 if __name__ == "__main__":
-    accuracy_object, accuracy_pose, mean_error = process(constants.DEBUGGING)
+    accuracy_object, accuracy_pose, mean_error = process(True)
     print("Object Recognition accuracy: ", format(accuracy_object, ".3%"))
     print("Pose Estimation accuracy:", format(accuracy_pose, ".3%"))
     print("Mean Pose error:", format(mean_error, ".3f") + "\u00b0")
