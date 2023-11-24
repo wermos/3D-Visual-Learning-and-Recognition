@@ -86,6 +86,14 @@ def coil_100_data_loader():
 
     return training, testing
 
+def data_loader():
+    if constants.NUM_OBJECTS == 20:
+        return coil_20_data_loader()
+    elif constants.NUM_OBJECTS== 100:
+        return coil_100_data_loader()
+    else:
+        raise NotImplementedError(f"There is no dataset that we support that contains {constants.NUM_OBJECTS} images.")
+
 if __name__ == "__main__":
     # training, testing = coil_20_data_loader()
     training, testing = coil_100_data_loader()
