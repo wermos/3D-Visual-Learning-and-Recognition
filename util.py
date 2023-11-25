@@ -36,3 +36,6 @@ def cubic_splines_to_vector(manifolds, vector):
 
 def normalize(image):
     return np.squeeze(image / np.linalg.norm(image))
+
+def reshape_to_square_matrix(array, length):
+    return array.reshape(length, length)
