@@ -54,6 +54,7 @@ def process(DEBUGGING = False, precision = 5):
 
 if __name__ == "__main__":
     accuracy_object, accuracy_pose, mean_error, _ = process(True)
+    # print(accuracy_object, accuracy_pose, mean_error)
     print("Object Recognition accuracy: ", format(np.sum(accuracy_object)/(constants.NUM_OBJECTS*constants.NUM_TESTING_IMAGES), ".3%"))
     print("Pose Estimation accuracy:", format(np.sum(accuracy_pose)/(constants.NUM_OBJECTS*constants.NUM_TESTING_IMAGES), ".3%"))
     print("Mean Pose error:", format(np.sum(mean_error)/(constants.NUM_OBJECTS*constants.NUM_TESTING_IMAGES), ".3f") + "\u00b0")
