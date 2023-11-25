@@ -4,11 +4,14 @@ environ['OMP_NUM_THREADS'] = '16'
 
 from math import floor
 import numpy as np
+import pickle
 from tqdm import tqdm
 
 from test import process
 import constants
 from plots_util import plots_directory, title_map, title_directory_map, plot_accuracy, plot_accuracy_all_objects, plot_mean_error, plot_mean_error_all_objects, plot_error_histogram
+
+logs_directory = 'logs/coil-' + str(constants.NUM_OBJECTS)
 
 def update_constants_pca_threshold(pca_threshold):
     constants.PCA_THRESHOLD = pca_threshold
@@ -63,3 +66,12 @@ if __name__ == "__main__":
             x = np.concatenate([np.repeat(variable, np.product(mean_error[idx].shape)/constants.NUM_OBJECTS) for idx, variable in enumerate(variable_map[i])])
             y = np.concatenate([np.reshape(data[object_id], np.product(data[object_id].shape)) for idx, data in enumerate(mean_error)])
             plot_error_histogram(x, y, object_id, i)
+
+        filename = logs_directory
+        Path(filename).mkdir(parents=True, exist_ok=True)
+        filename += '/' + str(title_directory_map[i]) + '.pkl'
+        with open(filename, 'wb') as file:
+            pickle.dump(accuracy_object, file)
+            pickle.dump(accuracy_pose, file)
+            pickle.dump(mean_error, file)
+            pickle.dump(distances, file)
