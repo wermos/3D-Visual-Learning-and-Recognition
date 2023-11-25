@@ -92,12 +92,12 @@ if __name__ == "__main__":
                     plot_mean_error(variable_map[i], [np.mean(data[object_id]) for data in mean_error], object_id, i)
 
                 print("Generating histograms...")
-                x = np.concatenate([np.repeat(variable, np.product(mean_error[idx].shape)) for idx, variable in enumerate(variable_map[i])])
-                y = np.concatenate([np.reshape(data, np.product(data.shape)) for idx, data in enumerate(mean_error)])
+                x = np.concatenate([np.repeat(variable, np.prod(mean_error[idx].shape)) for idx, variable in enumerate(variable_map[i])])
+                y = np.concatenate([np.reshape(data, np.prod(data.shape)) for idx, data in enumerate(mean_error)])
                 plot_error_histogram(x, y, -1, i)
                 for object_id in range(constants.NUM_OBJECTS):
-                    x = np.concatenate([np.repeat(variable, np.product(mean_error[idx].shape)/constants.NUM_OBJECTS) for idx, variable in enumerate(variable_map[i])])
-                    y = np.concatenate([np.reshape(data[object_id], np.product(data[object_id].shape)) for idx, data in enumerate(mean_error)])
+                    x = np.concatenate([np.repeat(variable, np.prod(mean_error[idx].shape)/constants.NUM_OBJECTS) for idx, variable in enumerate(variable_map[i])])
+                    y = np.concatenate([np.reshape(data[object_id], np.prod(data[object_id].shape)) for _, data in enumerate(mean_error)])
                     plot_error_histogram(x, y, object_id, i)
 
             if i == 2:
