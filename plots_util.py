@@ -75,7 +75,7 @@ def plot_error_histogram(x_axis, y_axis, object_id, plot_type):
     ax.set_xlabel(title_map[plot_type])
     ax.set_ylabel('Pose error (magnitude)')
     ax.set_title('Pose error ' + object_name + ' with varying ' + title_map[plot_type])
-    _, _, _, image = ax.hist2d(x_axis, y_axis, norm=LogNorm())
+    _, _, _, image = ax.hist2d(x_axis, y_axis, norm=LogNorm(), weights=x_axis)
     fig.colorbar(image)
     ax.set_ylim(bottom=0)
     save_fig(fig, title_directory_map[plot_type] + 'error_histogram_'+ object_name)
