@@ -1,10 +1,8 @@
-# import os
 from os import environ
 environ['OMP_NUM_THREADS'] = '16'
 
-# import sys
 import numpy as np
-import matplotlib.pyplot as plt
+from math import floor
 from tqdm import tqdm
 
 from test import process
