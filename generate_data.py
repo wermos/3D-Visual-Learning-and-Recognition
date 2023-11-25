@@ -1,10 +1,11 @@
 from pathlib import Path
 from os import environ
 environ['OMP_NUM_THREADS'] = '16'
-
+import argparse
 from math import floor
-import numpy as np
 import pickle
+
+import numpy as np
 from tqdm import tqdm
 
 from test import process
@@ -34,17 +35,32 @@ num_testing_images = np.zeros(len(training_data_splits))
 variable_map = {0: pca_thresholds, 1: training_data_splits}
 
 if __name__ == "__main__":
-    for i in range(2):
-        Path(plots_directory + title_directory_map[i]).mkdir(parents=True, exist_ok=True)
-        accuracy_object = np.zeros((len(variable_map[i]), constants.NUM_OBJECTS))
-        accuracy_pose = np.zeros((len(variable_map[i]), constants.NUM_OBJECTS))
-        mean_error = [None] * len(variable_map[i])
-        distances = [None] * len(variable_map[i])
-        for idx, variable in tqdm(list(enumerate(variable_map[i])), desc="Generating data by varying " + title_map[i]):
-            update_constants[i](variable)
-            num_testing_images[idx] = constants.NUM_TESTING_IMAGES
-            accuracy_object[idx], accuracy_pose[idx], mean_error[idx], distances[idx] = process(False)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--regenerate-data", action = 'store_true')
+    arguments = parser.parse_args()
+    regenerate_data = bool(arguments.regenerate_data)
 
+    print("Number of objects", constants.NUM_OBJECTS)
+    for i in range(2):
+        if regenerate_data:
+            accuracy_object = np.zeros((len(variable_map[i]), constants.NUM_OBJECTS))
+            accuracy_pose = np.zeros((len(variable_map[i]), constants.NUM_OBJECTS))
+            mean_error = [None] * len(variable_map[i])
+            distances = [None] * len(variable_map[i])
+            for idx, variable in tqdm(list(enumerate(variable_map[i])), desc="Generating data by varying " + title_map[i]):
+                update_constants[i](variable)
+                num_testing_images[idx] = constants.NUM_TESTING_IMAGES
+                accuracy_object[idx], accuracy_pose[idx], mean_error[idx], distances[idx] = process(False)
+        else:
+            print("Loading data with varying " + title_map[i] + "...")
+            filename = logs_directory + '/' + str(title_directory_map[i]) + '.pkl'
+            with open(filename, 'rb') as file:
+                accuracy_object, accuracy_pose, mean_error, distances = pickle.load(file)
+            for idx, variable in enumerate(variable_map[i]):
+                update_constants[i](variable)
+                num_testing_images[idx] = constants.NUM_TESTING_IMAGES
+
+        Path(plots_directory + title_directory_map[i]).mkdir(parents=True, exist_ok=True)
         print("Generating accuracy plots...")
         plot_accuracy(variable_map[i], np.mean(accuracy_object, axis=1)/num_testing_images, np.mean(accuracy_pose, axis=1)/num_testing_images, -1, i)
         plot_accuracy_all_objects(training_data_splits, accuracy_object/num_testing_images.reshape(len(num_testing_images), 1), 0, i)
@@ -67,10 +83,8 @@ if __name__ == "__main__":
             y = np.concatenate([np.reshape(data[object_id], np.product(data[object_id].shape)) for idx, data in enumerate(mean_error)])
             plot_error_histogram(x, y, object_id, i)
 
-        Path(logs_directory).mkdir(parents=True, exist_ok=True)
-        filename = logs_directory + '/' + str(title_directory_map[i]) + '.pkl'
-        with open(filename, 'wb') as file:
-            pickle.dump(accuracy_object, file)
-            pickle.dump(accuracy_pose, file)
-            pickle.dump(mean_error, file)
-            pickle.dump(distances, file)
+        if regenerate_data:
+            Path(logs_directory).mkdir(parents=True, exist_ok=True)
+            filename = logs_directory + '/' + str(title_directory_map[i]) + '.pkl'
+            with open(filename, 'wb') as file:
+                pickle.dump([accuracy_object, accuracy_pose, mean_error, distances], file)
