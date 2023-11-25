@@ -67,9 +67,8 @@ if __name__ == "__main__":
             y = np.concatenate([np.reshape(data[object_id], np.product(data[object_id].shape)) for idx, data in enumerate(mean_error)])
             plot_error_histogram(x, y, object_id, i)
 
-        filename = logs_directory
-        Path(filename).mkdir(parents=True, exist_ok=True)
-        filename += '/' + str(title_directory_map[i]) + '.pkl'
+        Path(logs_directory).mkdir(parents=True, exist_ok=True)
+        filename = logs_directory + '/' + str(title_directory_map[i]) + '.pkl'
         with open(filename, 'wb') as file:
             pickle.dump(accuracy_object, file)
             pickle.dump(accuracy_pose, file)
