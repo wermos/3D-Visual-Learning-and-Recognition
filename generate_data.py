@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from test import process
 import constants
-from plots_util import plots_directory, title_map, title_directory_map, plot_accuracy, plot_accuracy_all_objects, plot_mean_error, plot_mean_error_all_objects, plot_error_histogram, plot_accuracy_wireframe, plot_mean_error_wireframe
+from plots_util import plots_directory, sub_directories, title_map, title_directory_map, plot_accuracy, plot_accuracy_all_objects, plot_mean_error, plot_mean_error_all_objects, plot_error_histogram, plot_accuracy_wireframe, plot_mean_error_wireframe
 from util import reshape_to_square_matrix
 
 logs_directory = 'logs/coil-' + str(constants.NUM_OBJECTS)
@@ -75,7 +75,8 @@ if __name__ == "__main__":
 
         # Plotting Data
         if not restrict_plot_generation:
-            Path(plots_directory + title_directory_map[i]).mkdir(parents=True, exist_ok=True)
+            for directory in sub_directories[i]:
+                Path(plots_directory + title_directory_map[i] + '/' + directory).mkdir(parents=True, exist_ok=True)
 
             if i == 0 or i == 1:
                 print("Generating accuracy plots...")
