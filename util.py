@@ -39,3 +39,6 @@ def normalize(image):
 
 def reshape_to_square_matrix(array, length):
     return array.reshape(length, length)
+
+def append_intial_element(array):
+    return np.append(array, array[0])

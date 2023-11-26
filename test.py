@@ -6,13 +6,8 @@ from scipy.spatial.distance import cdist
 
 import constants
 from data_loader import data_loader
-from train import train_model
-from util import normalize, cubic_splines_to_vector
-
-def evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values):
-    manifold_points_universal = np.array([cubic_splines_to_vector(manifolds_universal[object_id], angle_values) for object_id in range(constants.NUM_OBJECTS)])
-    manifold_points_object = [np.array(cubic_splines_to_vector(manifolds_object[object_id], angle_values)) for object_id in range(constants.NUM_OBJECTS)]
-    return manifold_points_universal, manifold_points_object
+from train import train_model, evaluate_cubic_splines_for_angles
+from util import normalize
 
 def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifold_points_universal, manifold_points_object, angle_values):
     image = normalize(image)
@@ -53,6 +48,7 @@ def process(DEBUGGING = False, precision = 5):
     return accurate_count[:,0], accurate_count[:,1], error, distances
 
 if __name__ == "__main__":
+    print("Number of objects", constants.NUM_OBJECTS)
     accuracy_object, accuracy_pose, mean_error, _ = process(True)
     # print(accuracy_object, accuracy_pose, mean_error)
     print("Object Recognition accuracy: ", format(np.sum(accuracy_object)/(constants.NUM_OBJECTS*constants.NUM_TESTING_IMAGES), ".3%"))
