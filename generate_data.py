@@ -10,10 +10,10 @@ from tqdm import tqdm
 
 from test import process
 import constants
-from plots_util import plots_directory, sub_directories, title_map, title_directory_map, plot_accuracy, plot_accuracy_all_objects, plot_mean_error, plot_mean_error_all_objects, plot_error_histogram, plot_accuracy_wireframe, plot_mean_error_wireframe
+from plots_util import logs_directory, plots_directory, sub_directories, title_map, title_directory_map, plot_accuracy, plot_accuracy_all_objects, plot_mean_error, plot_mean_error_all_objects, plot_error_histogram, plot_accuracy_wireframe, plot_mean_error_wireframe
 from util import reshape_to_square_matrix
 
-logs_directory = 'logs/coil-' + str(constants.NUM_OBJECTS)
+
 
 def update_constants_pca_threshold(pca_threshold):
     constants.PCA_THRESHOLD = pca_threshold

@@ -1,11 +1,15 @@
+from os import environ
+environ['OMP_NUM_THREADS'] = '16'
+
 import numpy as np
 from scipy.interpolate import CubicSpline
-
+import pickle
+import argparse
 import constants
 from data_loader import data_loader
 from pca import PCA
 from util import normalize, cubic_splines_to_vector, append_intial_element
-from plots_util import plots_directory, title_directory_map, plot_manifolds, plot_type_map
+from plots_util import logs_directory, plots_directory, title_directory_map, plot_manifolds, plot_type_map
 from pathlib import Path
 
 def compute_manifold_for_object(eigenvectors, object_vectors, object_angles, mean):
@@ -46,14 +50,7 @@ def train_model(training_data):
 
     return mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object
 
-if __name__ == "__main__":
-    print("Number of objects", constants.NUM_OBJECTS)
-    print("data loading initiated...")
-    training, testing = data_loader()
-    print("data loading completed\ntraining initiated...")
-    mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = train_model(training)
-    print("training completed\ngenerating parametric representation plots...")
-    angle_values = np.arange(0,360,5)
+def generate_manifolds_plots(manifolds_universal, manifolds_object, angle_values):
     _, manifold_points_object = evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values)
     Path(plots_directory + title_directory_map[-1] + plot_type_map[0]).mkdir(parents=True, exist_ok=True)
     Path(plots_directory + title_directory_map[-1] + plot_type_map[1]).mkdir(parents=True, exist_ok=True)
@@ -67,3 +64,26 @@ if __name__ == "__main__":
                 arguments.append(axes)
         plot_manifolds(object_id, 0, *arguments)
         plot_manifolds(object_id, 1, *arguments)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--restrict-plot-generation", action = 'store_true')
+    arguments = parser.parse_args()
+    restrict_plot_generation = bool(arguments.restrict_plot_generation)
+
+    print("Number of objects", constants.NUM_OBJECTS)
+    print("data loading initiated...")
+    training, testing = data_loader()
+    print("data loading completed\ntraining initiated...")
+    angle_values = np.arange(0,360,5)
+    mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = train_model(training)
+    manifold_points_universal, manifold_points_object = evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values)
+    print("training completed\nstored data")
+    filename = logs_directory + '/' + 'training_data' + '.pkl'
+    with open(filename, 'wb') as file:
+        pickle.dump([mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifold_points_universal, manifold_points_object, angle_values], file)
+    print("data stored")
+
+    if not restrict_plot_generation:
+        print("generating parametric representation plots...")
+        generate_manifolds_plots(manifolds_universal, manifolds_object, angle_values)

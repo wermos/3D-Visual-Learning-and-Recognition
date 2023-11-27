@@ -3,8 +3,10 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 
 import constants
-plots_directory = 'plots/coil-' + str(constants.NUM_OBJECTS) + '/'
 
+plots_directory = 'plots/coil-' + str(constants.NUM_OBJECTS) + '/'
+logs_directory = 'logs/coil-' + str(constants.NUM_OBJECTS)
+images_directory = 'data/coil-' + str(constants.NUM_OBJECTS)
 title_map = {0: 'PCA Threshold', 1: 'Training Data Split', 2: 'PCA Threshold and Training Data Split'}
 title_directory_map = {0: 'pca_threshold', 1: 'training_data_split',  2: 'combined', -1 : 'parametric_eigenspace_representation'}
 accuracy_map = {0: 'Object', 1: 'Pose'}
