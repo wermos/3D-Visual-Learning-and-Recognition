@@ -26,7 +26,7 @@ def test_image(image, mean_universal, mean_object, eigenvectors_universal, eigen
     distances = np.array(cdist(manifold_points_object[object_id].T, projection.reshape(1,num_components_object), 'euclidean'))
     angle_id = np.argmin(distances)
     distance.append(distances[angle_id][0])
-    return object_id, angle_values[angle_id], distance
+    return object_id, angle_values[angle_id], np.around(distance, 3)
 
 def process(DEBUGGING = False, precision = 5):
     print("data loading initiated...") if DEBUGGING else None
@@ -56,13 +56,13 @@ if __name__ == "__main__":
     parser.add_argument("--angle")
     arguments = parser.parse_args()
     test_single_image = bool(arguments.test_single_image)
-    object_id = int(arguments.object_id)
-    angle = int(arguments.angle)
     if test_single_image:
+        object_id = int(arguments.object_id)
+        angle = int(arguments.angle)
         if constants.NUM_OBJECTS == 20:
-            image = load_grayscale_image(images_directory, object_id, angle//5)
+            image = load_grayscale_image(images_directory, object_id+1, angle//5)
         else:
-            image = load_color_image(images_directory, object_id, angle)
+            image = load_color_image(images_directory, object_id+1, angle)
         filename = logs_directory + '/' + 'training_data' + '.pkl'
         with open(filename, 'rb') as file:
             print(test_image(image, *pickle.load(file)))
