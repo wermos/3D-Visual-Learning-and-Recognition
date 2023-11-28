@@ -1,0 +1,12 @@
+\beamer@sectionintoc {1}{Implementation}{3}{0}{1}
+\beamer@subsectionintoc {1}{1}{High-Level Overview}{3}{0}{1}
+\beamer@subsectionintoc {1}{2}{Dataset}{5}{0}{1}
+\beamer@subsectionintoc {1}{3}{Code Optimizations}{8}{0}{1}
+\beamer@sectionintoc {2}{Results and Observations}{9}{0}{2}
+\beamer@subsectionintoc {2}{1}{Optimal PCA Threshold and Training Data Split}{9}{0}{2}
+\beamer@subsectionintoc {2}{2}{Variation with PCA Threshold and Training Data Split one at a time}{9}{0}{2}
+\beamer@subsectionintoc {2}{3}{Incorrect Object Detection}{10}{0}{2}
+\beamer@subsectionintoc {2}{4}{Simultaneous variation with PCA Threshold and Training Data Split}{19}{0}{2}
+\beamer@subsectionintoc {2}{5}{Observations (Three types of objects)}{20}{0}{2}
+\beamer@sectionintoc {3}{Theory (optional)}{24}{0}{3}
+\beamer@sectionintoc {4}{References}{27}{1}{4}
