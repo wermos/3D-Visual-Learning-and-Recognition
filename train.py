@@ -78,7 +78,7 @@ if __name__ == "__main__":
     angle_values = np.arange(0,360,5)
     mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifolds_universal, manifolds_object = train_model(training)
     manifold_points_universal, manifold_points_object = evaluate_cubic_splines_for_angles(manifolds_universal, manifolds_object, angle_values)
-    print("training completed\nstored data")
+    print("training completed\nstoring data...")
     filename = logs_directory + '/' + 'training_data' + '.pkl'
     with open(filename, 'wb') as file:
         pickle.dump([mean_universal, mean_object, eigenvectors_universal, eigenvectors_object, manifold_points_universal, manifold_points_object, angle_values], file)
